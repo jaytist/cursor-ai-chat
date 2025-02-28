@@ -7,6 +7,7 @@ router.post(
   "/api/chat",
   asyncErrorHandler(async (req, res, _next) => {
     const { message } = req.body;
+    console.log("message", message);
     const resData = await AssistantBot.runAssistantBot(message);
     console.log("resData", resData);
 
