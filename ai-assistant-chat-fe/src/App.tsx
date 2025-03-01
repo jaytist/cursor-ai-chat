@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { sendMessage } from "./api/chat";
 
 function App() {
   const [userMessage, setUserMessage] = useState("");
   const [chats, setChats] = useState<{ type: string; content: string }[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  };
+
+  useLayoutEffect(() => {
+    scrollToBottom();
+  }, [chats]); // Scroll whenever chats update
 
   const handleSendMessage = async () => {
     const currentUserMessage = {
@@ -11,11 +22,14 @@ function App() {
       content: userMessage.toString(),
     };
     setUserMessage("");
+    let userChat = [currentUserMessage];
+
+    setChats((prev) => [...prev, ...userChat]);
     const response = await sendMessage(userMessage);
     const currentAIMessage = { type: "ai", content: response.message };
-
-    setChats([...chats, currentUserMessage, currentAIMessage]);
+    setChats((prev) => [...prev, currentAIMessage]);
   };
+
   const handleUserMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserMessage(e.target.value);
   };
@@ -133,16 +147,19 @@ function App() {
           </div>
 
           {/* Chat Area */}
-          <div className="flex-1 bg-gray-900 rounded-t-lg flex flex-col">
+          <div className=" flex-1 bg-gray-900 rounded-t-lg flex flex-col">
             {/* Messages Container */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div
+              ref={messagesEndRef}
+              className="min-h-0 flex-1 overflow-y-auto p-4 space-y-4"
+            >
               {chats.map((chat) => {
                 {
                   /* AI Message */
                 }
                 if (chat.type === "ai") {
                   return (
-                    <div className="flex items-start gap-4">
+                    <div key={chat.content} className="flex items-start gap-4">
                       <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-500">
                         AI
                       </div>
@@ -156,7 +173,10 @@ function App() {
                     /* User Message */
                   }
                   return (
-                    <div className="flex items-start gap-4 justify-end">
+                    <div
+                      key={chat.content}
+                      className="flex items-start gap-4 justify-end"
+                    >
                       <div className="bg-purple-500/10 rounded-lg p-4 max-w-[80%]">
                         <p className="text-gray-300">{chat.content}</p>
                       </div>
@@ -167,13 +187,15 @@ function App() {
                   );
                 }
               })}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input Area */}
-            <div className="border-t border-gray-800 p-4">
+            <div className="border-t  bg-gray-900 p-4">
               <div className="max-w-3xl mx-auto relative">
                 <input
                   type="text"
+                  value={userMessage}
                   onChange={handleUserMessageChange}
                   placeholder="Type a message..."
                   className="w-full bg-gray-800 text-gray-300 rounded-lg pl-4 pr-12 py-3"
