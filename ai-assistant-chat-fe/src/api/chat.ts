@@ -16,13 +16,13 @@ export async function getAssistants() {
   return await response.json();
 }
 
-export async function createChatSession(assistantId: string) {
+export async function createChatSession(assistantId: string, name: string) {
   const response = await fetch("http://localhost:3000/api/chat/session", {
     headers: {
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify({ assistantId }),
+    body: JSON.stringify({ assistantId, name }),
   });
   return await response.json();
 }

@@ -33,10 +33,11 @@ router.get(
 router.post(
   "/api/chat/session",
   asyncErrorHandler(async (req, res, _next) => {
-    const { assistantId } = req.body;
+    const { assistantId, name } = req.body;
     console.log("assistantId", assistantId);
     const chatSession = await AssistantRepo.createChatSession(
-      Number(assistantId)
+      Number(assistantId),
+      name
     );
     res.status(200).send(chatSession);
   })

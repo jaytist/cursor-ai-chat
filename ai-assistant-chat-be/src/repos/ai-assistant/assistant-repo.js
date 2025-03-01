@@ -12,16 +12,20 @@ export default class AssistantRepo {
     }
   }
 
-  static async createChatSession(assistantId) {
+  static async createChatSession(assistantId, name) {
     try {
       if (!assistantId) {
         throw new Error("Assistant ID is required");
       }
 
-      const timestamp = new Date().toLocaleString();
+      const timestamp = new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
       const { rows } = await dbPool.query(
         "INSERT INTO chat_sessions (assistant_id, title) VALUES ($1, $2) RETURNING *;",
-        [assistantId, `Chat -${timestamp}`]
+        [assistantId, `${name} Chat -${timestamp}`]
       );
 
       if (!rows.length) {

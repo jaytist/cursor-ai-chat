@@ -133,7 +133,10 @@ function App() {
     if (!selectedAssistant) return;
 
     try {
-      const response = await createChatSession(selectedAssistant.id.toString());
+      const response = await createChatSession(
+        selectedAssistant.id.toString(),
+        selectedAssistant.name
+      );
       if (response.error) {
         throw new Error(response.error.message || "Failed to create new chat");
       }
