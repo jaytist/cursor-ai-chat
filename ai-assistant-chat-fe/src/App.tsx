@@ -56,7 +56,6 @@ function App() {
   // Fetch sessions when selected assistant changes
   useEffect(() => {
     if (!selectedAssistant) return;
-    console.log("selectedAssistant", selectedAssistant);
 
     const abortController = new AbortController();
 
@@ -73,7 +72,7 @@ function App() {
         if (sessions.error) {
           throw new Error(sessions.error.message || "Failed to fetch sessions");
         }
-        console.log("sessions-why", sessions);
+
         setSessions(sessions);
       } catch (error: any) {
         if (!abortController.signal.aborted) {
@@ -150,7 +149,11 @@ function App() {
   const handleSendMessage = async () => {
     if (!activeSession) {
       toast.error("No active session or create a new chat first");
-      setError(new Error("No active session or create a new chat first"));
+      setError(
+        new Error(
+          "create a new chat first using '+New Chat' button or No active session selected "
+        )
+      );
       return;
     }
 
