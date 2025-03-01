@@ -86,10 +86,12 @@ function App() {
       setIsLoadingMessages(true);
       try {
         const messages = await getChatMessages(activeSession?.id as string);
+        console.log("Received messages:", messages);
         const formattedMessages = messages.map((msg: any) => ({
           type: msg.role === "user" ? "user" : "ai",
           content: msg.content,
         }));
+        console.log("Formatted messages:", formattedMessages);
         setChats(formattedMessages);
       } catch (error) {
         if (!abortController.signal.aborted) {
