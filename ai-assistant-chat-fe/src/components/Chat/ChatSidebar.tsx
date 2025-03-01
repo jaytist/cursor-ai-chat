@@ -25,8 +25,8 @@ export function ChatSidebar({
           disabled={!hasSelectedAssistant}
           className={`w-full rounded-lg p-2 flex items-center justify-center gap-2 ${
             hasSelectedAssistant
-              ? "bg-gray-800 text-white hover:bg-gray-700"
-              : "bg-gray-800/50 text-gray-500 cursor-not-allowed"
+              ? "bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+              : "bg-[var(--color-bg-secondary)]/50 text-[var(--color-text-secondary)] dark:bg-gray-800/50 dark:text-gray-500 cursor-not-allowed"
           }`}
         >
           <span>+</span> New Chat
