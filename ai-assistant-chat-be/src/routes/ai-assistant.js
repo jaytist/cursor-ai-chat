@@ -1,6 +1,5 @@
 import express from "express";
 import asyncErrorHandler from "../middleware/async-error-handler.js";
-import AssistantBot from "../repos/ai-assistant/assistant.js";
 import AssistantRepo from "../repos/ai-assistant/assistant-repo.js";
 
 import OpenAI from "openai";
@@ -10,17 +9,6 @@ dotenv.config();
 const openai = new OpenAI();
 
 const router = express.Router();
-router.post(
-  "/api/chat",
-  asyncErrorHandler(async (req, res, _next) => {
-    const { message } = req.body;
-    console.log("message", message);
-    const resData = await AssistantBot.runAssistantBot(message);
-    console.log("resData", resData);
-
-    res.status(200).send(JSON.stringify(resData));
-  })
-);
 
 router.get(
   "/api/assistants",
