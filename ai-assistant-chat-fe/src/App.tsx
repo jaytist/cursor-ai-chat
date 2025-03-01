@@ -147,10 +147,10 @@ function App() {
   const handleUserMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserMessage(e.target.value);
   };
-
+  //bg-gray-950
   return (
     <ThemeProvider>
-      <div className="flex flex-col h-screen bg-gray-950">
+      <div className="flex flex-col h-screen bg-white dark:bg-gray-950">
         <div className="flex flex-col h-screen px-8 pt-4">
           <ChatHeader />
 
