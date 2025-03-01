@@ -125,4 +125,14 @@ router.post(
     res.json({ content: assistantResponse });
   })
 );
+router.get(
+  "/api/chat/session/:sessionId/messages",
+  asyncErrorHandler(async (req, res, _next) => {
+    const { sessionId } = req.params;
+    console.log("sessionId", sessionId);
+    const messages = await AssistantRepo.getChatMessages(sessionId);
+    res.status(200).send(messages);
+  })
+);
+
 export default router;

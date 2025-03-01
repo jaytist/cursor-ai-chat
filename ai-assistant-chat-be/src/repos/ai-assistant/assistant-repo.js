@@ -25,4 +25,11 @@ export default class AssistantRepo {
     );
     return toCamelCase(rows);
   }
+  static async getChatMessages(sessionId) {
+    const { rows } = await dbPool.query(
+      "SELECT * FROM messages WHERE messages.session_id = $1 ORDER BY created_at DESC",
+      [sessionId]
+    );
+    return toCamelCase(rows);
+  }
 }
