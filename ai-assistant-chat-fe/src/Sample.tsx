@@ -4,21 +4,7 @@ import {
   createChatSession,
   sendMessageToChatSession,
 } from "./api/chat";
-
-interface Assistant {
-  id: number;
-  assistantId: string;
-  name: string;
-  model: string;
-  description: string;
-}
-
-interface ChatSession {
-  id: string;
-  assistantId: string;
-  title: string;
-  createdAt: string;
-}
+import { Assistant, ChatSession } from "./types/types";
 
 function Sample() {
   const [userMessage, setUserMessage] = useState("");
@@ -26,7 +12,7 @@ function Sample() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [activeSession, setActiveSession] = useState<string | null>(null);
+  const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
   const [selectedAssistant, setSelectedAssistant] = useState<Assistant | null>(
     null
   );
@@ -57,7 +43,7 @@ function Sample() {
 
     const response = await createChatSession(selectedAssistant.id.toString());
     setSessions((prev) => [...prev, response]);
-    setActiveSession(response.id);
+    setActiveSession(response);
     setChats([]); // Clear existing chats
   };
 
@@ -150,9 +136,9 @@ function Sample() {
                 <div
                   key={session.id}
                   className={`px-3 py-2 hover:bg-gray-800 cursor-pointer ${
-                    activeSession === session.id ? "bg-gray-800" : ""
+                    activeSession?.id === session.id ? "bg-gray-800" : ""
                   }`}
-                  onClick={() => setActiveSession(session.id)}
+                  onClick={() => setActiveSession(session)}
                 >
                   <div className="text-gray-400 text-sm">
                     {session.title || "New Chat"}

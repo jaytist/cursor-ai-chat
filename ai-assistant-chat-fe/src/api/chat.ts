@@ -1,3 +1,5 @@
+import { threadId } from "worker_threads";
+
 export async function sendMessage(message: string) {
   const response = await fetch("http://localhost:3000/api/chat", {
     headers: {
@@ -25,18 +27,15 @@ export async function createChatSession(assistantId: string) {
   return await response.json();
 }
 
-export async function sendMessageToChatSession(
-  sessionId: string,
-  message: string
-) {
+export async function sendMessageToChatSession(session: any, message: string) {
   const response = await fetch(
-    `http://localhost:3000/api/chat/session/${sessionId}/messages`,
+    `http://localhost:3000/api/chat/session/${session.id}/messages`,
     {
       headers: {
         "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ content: message }),
+      body: JSON.stringify({ content: message, threadId: session.threadId }),
     }
   );
   return await response.json();

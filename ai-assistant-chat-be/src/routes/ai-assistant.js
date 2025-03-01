@@ -41,28 +41,32 @@ router.post(
     res.status(200).send(chatSession);
   })
 );
-
+router.get(
+  "/api/chat/sessions",
+  asyncErrorHandler(async (req, res, _next) => {
+    const chatSessions = await AssistantRepo.getChatSessions();
+    res.status(200).send(chatSessions);
+  })
+);
 router.post(
   "/api/chat/session/:sessionId/messages",
   asyncErrorHandler(async (req, res, _next) => {
     const { sessionId } = req.params;
-    const { content } = req.body;
+    const { content, threadId } = req.body;
 
     console.log("sessionId", sessionId);
     console.log("content", content);
+    console.log("threadId", threadId);
 
     // Store user message
     await dbPool.query(
       "INSERT INTO messages (session_id, content, role) VALUES ($1, $2, $3)",
-      [sessionId.toString(), content, "user"]
+      [sessionId, content, "user"]
     );
     console.log("error", `1`);
 
     // Get assistant ID
-    // const { rows } = await dbPool.query(
-    //   "SELECT assistant_id FROM chat_sessions WHERE id = $1",
-    //   [sessionId]
-    // );
+
     const { rows } = await dbPool.query(
       `
       SELECT a.assistant_id as openai_assistant_id 
@@ -76,7 +80,17 @@ router.post(
     console.log("error", `2`);
 
     // Get OpenAI thread ID (implement thread storage as needed)
-    const thread = await openai.beta.threads.create();
+    const thread = threadId
+      ? { id: threadId }
+      : await openai.beta.threads.create();
+    console.log("thread", thread);
+    if (threadId === null) {
+      console.log("threadId is null");
+      await dbPool.query(
+        `UPDATE  chat_sessions as cs SET thread_id = $1 WHERE cs.id = $2`,
+        [thread.id, sessionId]
+      );
+    }
 
     console.log("error", `3`, thread);
     // Create OpenAI message

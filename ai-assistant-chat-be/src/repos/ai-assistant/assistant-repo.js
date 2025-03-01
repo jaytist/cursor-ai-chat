@@ -9,11 +9,20 @@ export default class AssistantRepo {
 
   static async createChatSession(assistantId) {
     console.log("assistantId-repo", assistantId);
+    const timestamp = new Date().toLocaleString();
     const { rows } = await dbPool.query(
       "INSERT INTO chat_sessions (assistant_id, title) VALUES ($1, $2) RETURNING *;",
-      [assistantId, "New Chat"]
+      [assistantId, `Chat -${timestamp}`]
     );
 
     return toCamelCase(rows)[0];
+  }
+
+  static async getChatSessions() {
+    const { rows } = await dbPool.query(
+      "SELECT * FROM chat_sessions ORDER BY created_at DESC",
+      []
+    );
+    return toCamelCase(rows);
   }
 }
