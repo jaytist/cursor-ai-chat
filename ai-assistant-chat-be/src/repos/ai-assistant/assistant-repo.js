@@ -8,10 +8,12 @@ export default class AssistantRepo {
   }
 
   static async createChatSession(assistantId) {
+    console.log("assistantId-repo", assistantId);
     const { rows } = await dbPool.query(
-      "INSERT INTO chat_sessions (assistant_id, title) VALUES ($1, $2) RETURNING *",
+      "INSERT INTO chat_sessions (assistant_id, title) VALUES ($1, $2) RETURNING *;",
       [assistantId, "New Chat"]
     );
-    return toCamelCase(rows[0]);
+
+    return toCamelCase(rows)[0];
   }
 }
