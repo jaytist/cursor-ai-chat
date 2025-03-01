@@ -11,6 +11,7 @@ import { AssistantCard } from "./components/Chat/AssistantCard";
 import { ChatHeader } from "./components/Chat/ChatHeader";
 import { ChatSidebar } from "./components/Chat/ChatSidebar";
 import { ChatArea } from "./components/Chat/ChatArea";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
   const [userMessage, setUserMessage] = useState("");
@@ -146,45 +147,47 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-950">
-      <div className="flex flex-col h-screen px-8 pt-4">
-        <ChatHeader />
+    <ThemeProvider>
+      <div className="flex flex-col h-screen bg-gray-950">
+        <div className="flex flex-col h-screen px-8 pt-4">
+          <ChatHeader />
 
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          {isLoadingAssistants
-            ? Array(4)
-                .fill(null)
-                .map((_, index) => <AssistantCard key={index} isLoading />)
-            : assistants.map((assistant) => (
-                <AssistantCard
-                  key={assistant.id}
-                  assistant={assistant}
-                  isSelected={selectedAssistant?.id === assistant.id}
-                  onSelect={setSelectedAssistant}
-                />
-              ))}
-        </div>
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            {isLoadingAssistants
+              ? Array(4)
+                  .fill(null)
+                  .map((_, index) => <AssistantCard key={index} isLoading />)
+              : assistants.map((assistant) => (
+                  <AssistantCard
+                    key={assistant.id}
+                    assistant={assistant}
+                    isSelected={selectedAssistant?.id === assistant.id}
+                    onSelect={setSelectedAssistant}
+                  />
+                ))}
+          </div>
 
-        <div className="flex gap-4 flex-1 mb-0">
-          <ChatSidebar
-            sessions={sessions}
-            activeSession={activeSession}
-            onSessionSelect={setActiveSession}
-            onNewChat={handleCreateNewChat}
-            hasSelectedAssistant={!!selectedAssistant}
-            isLoading={isLoadingSessions}
-          />
+          <div className="flex gap-4 flex-1 mb-0">
+            <ChatSidebar
+              sessions={sessions}
+              activeSession={activeSession}
+              onSessionSelect={setActiveSession}
+              onNewChat={handleCreateNewChat}
+              hasSelectedAssistant={!!selectedAssistant}
+              isLoading={isLoadingSessions}
+            />
 
-          <ChatArea
-            chats={chats}
-            isAIResponding={isAIResponding}
-            userMessage={userMessage}
-            onUserMessageChange={handleUserMessageChange}
-            onSendMessage={handleSendMessage}
-          />
+            <ChatArea
+              chats={chats}
+              isAIResponding={isAIResponding}
+              userMessage={userMessage}
+              onUserMessageChange={handleUserMessageChange}
+              onSendMessage={handleSendMessage}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 
