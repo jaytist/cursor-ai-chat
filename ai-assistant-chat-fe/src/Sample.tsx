@@ -7,6 +7,7 @@ import {
   getChatMessages,
 } from "./api/chat";
 import { Assistant, ChatSession } from "./types/types";
+import Loading from "./components/UI/loading";
 
 function Sample() {
   const [userMessage, setUserMessage] = useState("");
@@ -22,6 +23,7 @@ function Sample() {
   // Add loading states
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [isAIResponding, setIsAIResponding] = useState(false);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -118,6 +120,7 @@ function Sample() {
 
     try {
       setChats((prev) => [...prev, currentUserMessage]);
+      setIsAIResponding(true);
       const response = await sendMessageToChatSession(
         activeSession,
         userMessage
@@ -126,7 +129,8 @@ function Sample() {
       setChats((prev) => [...prev, currentAIMessage]);
     } catch (error) {
       console.error("Failed to send message:", error);
-      // Optionally show error to user and/or rollback the message
+    } finally {
+      setIsAIResponding(false);
     }
   };
 
@@ -259,6 +263,16 @@ function Sample() {
                   );
                 }
               })}
+              {isAIResponding && (
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-500">
+                    AI
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-4 max-w-[80%]">
+                    <Loading />
+                  </div>
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
