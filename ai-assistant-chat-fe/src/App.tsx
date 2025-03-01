@@ -180,7 +180,9 @@ function App() {
     }
   };
 
-  const handleUserMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUserMessageChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setUserMessage(e.target.value);
   };
   //bg-gray-950

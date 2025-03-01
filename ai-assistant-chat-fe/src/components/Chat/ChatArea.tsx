@@ -7,7 +7,7 @@ interface ChatAreaProps {
   chats: { type: string; content: string }[];
   isAIResponding: boolean;
   userMessage: string;
-  onUserMessageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onUserMessageChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onSendMessage: () => void;
   isLoadingMessages: boolean;
 }
