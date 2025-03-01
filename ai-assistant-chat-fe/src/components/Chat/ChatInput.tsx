@@ -6,14 +6,14 @@ interface ChatInputProps {
 
 export default function ChatInput({ value, onChange, onSend }: ChatInputProps) {
   return (
-    <div className="border-t bg-gray-900 p-4">
+    <div className="border-t bg-white dark:bg-gray-900 p-4">
       <div className="max-w-3xl mx-auto relative">
         <input
           type="text"
           value={value}
           onChange={onChange}
           placeholder="Type a message..."
-          className="w-full bg-gray-800 text-gray-300 rounded-lg pl-4 pr-12 py-3"
+          className="w-full bg-transparent dark:bg-gray-800 text-gray-900 dark:text-gray-300 rounded-lg pl-4 pr-12 py-3 border-blue-400 dark:border-transparent border"
         />
         <button
           onClick={onSend}
