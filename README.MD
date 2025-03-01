@@ -1,11 +1,11 @@
 # AI Assistant Chat - Using Cursor AI
 
-Its provides differentAI assistant services for purpise of different departments
+It provides different AI assistant services tailored for various departments.
 
 ## Features
 
-- Supports four AI assistant chats with different personas
-- Keeps track of messages and chat history
+- Supports four AI assistant chats, each with a unique persona
+- Tracks messages and maintains chat history
 
 ## Prerequisites
 
