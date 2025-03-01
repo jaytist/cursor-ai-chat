@@ -6,6 +6,7 @@ interface ChatSidebarProps {
   onSessionSelect: (session: ChatSession) => void;
   onNewChat: () => void;
   hasSelectedAssistant: boolean;
+  isLoading: boolean;
 }
 
 export function ChatSidebar({
@@ -14,6 +15,7 @@ export function ChatSidebar({
   onSessionSelect,
   onNewChat,
   hasSelectedAssistant,
+  isLoading,
 }: ChatSidebarProps) {
   return (
     <div className="w-64 bg-gray-900 rounded-t-lg flex flex-col">
@@ -31,22 +33,31 @@ export function ChatSidebar({
         </button>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {sessions.map((session) => (
-          <div
-            key={session.id}
-            className={`px-3 py-2 hover:bg-gray-800 cursor-pointer ${
-              activeSession?.id === session.id ? "bg-gray-800" : ""
-            }`}
-            onClick={() => onSessionSelect(session)}
-          >
-            <div className="text-gray-400 text-sm">
-              {session.title || "New Chat"}
-            </div>
-            <div className="text-gray-600 text-xs">
-              {new Date(session.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-        ))}
+        {isLoading
+          ? Array(4)
+              .fill(null)
+              .map((_, index) => (
+                <div key={index} className="px-3 py-2">
+                  <div className="h-4 bg-gray-800 rounded w-3/4 mb-1"></div>
+                  <div className="h-3 bg-gray-800 rounded w-1/2"></div>
+                </div>
+              ))
+          : sessions.map((session) => (
+              <div
+                key={session.id}
+                className={`px-3 py-2 hover:bg-gray-800 cursor-pointer ${
+                  activeSession?.id === session.id ? "bg-gray-800" : ""
+                }`}
+                onClick={() => onSessionSelect(session)}
+              >
+                <div className="text-gray-400 text-sm">
+                  {session.title || "New Chat"}
+                </div>
+                <div className="text-gray-600 text-xs">
+                  {new Date(session.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+            ))}
       </div>
     </div>
   );

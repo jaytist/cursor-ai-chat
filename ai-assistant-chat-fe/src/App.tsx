@@ -172,6 +172,7 @@ function App() {
             onSessionSelect={setActiveSession}
             onNewChat={handleCreateNewChat}
             hasSelectedAssistant={!!selectedAssistant}
+            isLoading={isLoadingSessions}
           />
 
           <ChatArea
