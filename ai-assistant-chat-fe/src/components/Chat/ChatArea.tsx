@@ -27,7 +27,7 @@ export function ChatArea({
   }, [chats]);
 
   return (
-    <div className="flex-1 bg-gray-900 rounded-t-lg flex flex-col">
+    <div className="flex-1 dark:bg-gray-900 bg-gray-100 rounded-t-lg flex flex-col">
       <div
         ref={messagesEndRef}
         className="min-h-0 flex-1 overflow-y-auto p-4 space-y-4"
