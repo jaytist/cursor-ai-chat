@@ -8,3 +8,8 @@ export async function sendMessage(message: string) {
   });
   return await response.json();
 }
+
+export async function getAssistants() {
+  const response = await fetch("http://localhost:3000/api/assistants");
+  return await response.json();
+}
