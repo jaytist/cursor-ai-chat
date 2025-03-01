@@ -148,12 +148,10 @@ function App() {
 
   const handleSendMessage = async () => {
     if (!activeSession) {
-      toast.error("No active session or create a new chat first");
-      setError(
-        new Error(
-          "create a new chat first using '+New Chat' button or No active session selected "
-        )
+      toast.error(
+        "Create a new chat using '+New Chat' button or Session(Hisotory) is not selected"
       );
+      setError(new Error("No active session or create a new chat first"));
       return;
     }
 
