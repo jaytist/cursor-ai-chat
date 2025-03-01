@@ -17,7 +17,7 @@ export default function ChatInput({ value, onChange, onSend }: ChatInputProps) {
         />
         <button
           onClick={onSend}
-          className="absolute right-3 top-6 text-purple-500 hover:text-purple-400"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-500 hover:text-purple-400 text-2xl"
         >
           ➤
         </button>
