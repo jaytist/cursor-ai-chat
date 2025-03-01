@@ -3,6 +3,8 @@ import {
   getAssistants,
   createChatSession,
   sendMessageToChatSession,
+  getChatSessions,
+  getChatMessages,
 } from "./api/chat";
 import { Assistant, ChatSession } from "./types/types";
 
@@ -16,6 +18,10 @@ function Sample() {
   const [selectedAssistant, setSelectedAssistant] = useState<Assistant | null>(
     null
   );
+
+  // Add loading states
+  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -38,13 +44,67 @@ function Sample() {
     scrollToBottom();
   }, [chats]); // Scroll whenever chats update
 
+  // Fetch sessions on component mount
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    async function fetchSessions() {
+      setIsLoadingSessions(true);
+      try {
+        const sessions = await getChatSessions();
+        setSessions(sessions);
+      } catch (error) {
+        if (!abortController.signal.aborted) {
+          console.error("Failed to fetch sessions:", error);
+        }
+      } finally {
+        setIsLoadingSessions(false);
+      }
+    }
+
+    fetchSessions();
+    return () => abortController.abort();
+  }, []);
+
+  // Fetch messages when active session changes
+  useEffect(() => {
+    if (!activeSession) return;
+
+    const abortController = new AbortController();
+
+    async function fetchMessages() {
+      setIsLoadingMessages(true);
+      try {
+        const messages = await getChatMessages(activeSession?.id as string);
+        const formattedMessages = messages.map((msg: any) => ({
+          type: msg.role === "user" ? "user" : "ai",
+          content: msg.content,
+        }));
+        setChats(formattedMessages);
+      } catch (error) {
+        if (!abortController.signal.aborted) {
+          console.error("Failed to fetch messages:", error);
+        }
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    }
+
+    fetchMessages();
+    return () => abortController.abort();
+  }, [activeSession]);
+
   const handleCreateNewChat = async () => {
     if (!selectedAssistant) return;
 
-    const response = await createChatSession(selectedAssistant.id.toString());
-    setSessions((prev) => [...prev, response]);
-    setActiveSession(response);
-    setChats([]); // Clear existing chats
+    try {
+      const response = await createChatSession(selectedAssistant.id.toString());
+      setSessions((prev) => [...prev, response]);
+      setActiveSession(response);
+      setChats([]); // Clear chats for new session
+    } catch (error) {
+      console.error("Failed to create chat session:", error);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -52,15 +112,22 @@ function Sample() {
 
     const currentUserMessage = {
       type: "user",
-      content: userMessage.toString(),
+      content: userMessage,
     };
     setUserMessage("");
-    let userChat = [currentUserMessage];
 
-    setChats((prev) => [...prev, ...userChat]);
-    const response = await sendMessageToChatSession(activeSession, userMessage);
-    const currentAIMessage = { type: "ai", content: response.content };
-    setChats((prev) => [...prev, currentAIMessage]);
+    try {
+      setChats((prev) => [...prev, currentUserMessage]);
+      const response = await sendMessageToChatSession(
+        activeSession,
+        userMessage
+      );
+      const currentAIMessage = { type: "ai", content: response.content };
+      setChats((prev) => [...prev, currentAIMessage]);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      // Optionally show error to user and/or rollback the message
+    }
   };
 
   const handleUserMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
