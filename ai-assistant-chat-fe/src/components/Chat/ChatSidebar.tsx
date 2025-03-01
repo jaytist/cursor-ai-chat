@@ -18,7 +18,7 @@ export function ChatSidebar({
   isLoading,
 }: ChatSidebarProps) {
   return (
-    <div className="w-64 bg-gray-900 rounded-t-lg flex flex-col">
+    <div className="w-64 bg-[var(--color-bg-primary)] dark:bg-gray-900 rounded-t-lg flex flex-col">
       <div className="p-3">
         <button
           onClick={onNewChat}

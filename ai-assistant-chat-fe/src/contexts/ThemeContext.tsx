@@ -24,10 +24,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Update data-theme attribute and localStorage when theme changes
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    // Add or remove the 'dark' class on the document root
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    // Add or remove the 'dark' class on the document root
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   };
 
   return (
