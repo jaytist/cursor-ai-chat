@@ -1,6 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import ChatMessage from "./ChatMessage";
 
+// Mock react-markdown module
+jest.mock("react-markdown", () => {
+  return ({ children }: { children: string }) => <div>{children}</div>;
+});
+
+// Mock rehype-highlight module
+jest.mock("rehype-highlight", () => {
+  return () => {};
+});
+
 describe("ChatMessage", () => {
   it("renders AI message correctly", () => {
     render(<ChatMessage type="ai" content="Hello, I'm an AI" />);
