@@ -23,7 +23,7 @@ Its provides differentAI assistant services for purpise of different departments
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add the following:
+3. Create a `.env` file in the root directory of `ai-assistant-chat-be` and add the following:
 
    ```env
    PORT=3000
