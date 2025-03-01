@@ -46,6 +46,10 @@ function Sample() {
 
     const abortController = new AbortController();
 
+    // Clear chats and active session when assistant changes
+    setChats([]);
+    setActiveSession(null);
+
     async function fetchSessions() {
       setIsLoadingSessions(true);
       try {
