@@ -12,9 +12,6 @@ import { AssistantCard } from "./components/Chat/AssistantCard";
 import { ChatHeader } from "./components/Chat/ChatHeader";
 import { ChatSidebar } from "./components/Chat/ChatSidebar";
 import { ChatArea } from "./components/Chat/ChatArea";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import { error } from "console";
-import ErrorBoundary from "./components/ErrorBoundary";
 import { useError } from "./contexts/ErrorContext";
 
 function App() {
