@@ -41,8 +41,10 @@ export async function sendMessageToChatSession(session: any, message: string) {
   return await response.json();
 }
 
-export async function getChatSessions() {
-  const response = await fetch("http://localhost:3000/api/chat/sessions");
+export async function getChatSessions(assistantId: number) {
+  const response = await fetch(
+    `http://localhost:3000/api/chat/sessions/${assistantId}`
+  );
   return await response.json();
 }
 

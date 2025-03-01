@@ -46,14 +46,18 @@ function Sample() {
     scrollToBottom();
   }, [chats]); // Scroll whenever chats update
 
-  // Fetch sessions on component mount
+  // Fetch sessions when selected assistant changes
   useEffect(() => {
+    if (!selectedAssistant) return;
+    console.log("selectedAssistant", selectedAssistant);
+
     const abortController = new AbortController();
 
     async function fetchSessions() {
       setIsLoadingSessions(true);
       try {
-        const sessions = await getChatSessions();
+        const sessions = await getChatSessions(selectedAssistant?.id as number);
+        console.log("sessions-why", sessions);
         setSessions(sessions);
       } catch (error) {
         if (!abortController.signal.aborted) {
@@ -66,7 +70,7 @@ function Sample() {
 
     fetchSessions();
     return () => abortController.abort();
-  }, []);
+  }, [selectedAssistant]); // Added selectedAssistant as dependency
 
   // Fetch messages when active session changes
   useEffect(() => {

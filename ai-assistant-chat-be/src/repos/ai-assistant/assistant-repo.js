@@ -18,10 +18,10 @@ export default class AssistantRepo {
     return toCamelCase(rows)[0];
   }
 
-  static async getChatSessions() {
+  static async getChatSessions(assistantId) {
     const { rows } = await dbPool.query(
-      "SELECT * FROM chat_sessions ORDER BY created_at DESC",
-      []
+      "SELECT * FROM chat_sessions WHERE assistant_id = $1 ORDER BY created_at DESC",
+      [assistantId]
     );
     return toCamelCase(rows);
   }

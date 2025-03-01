@@ -42,9 +42,10 @@ router.post(
   })
 );
 router.get(
-  "/api/chat/sessions",
+  "/api/chat/sessions/:assistantId",
   asyncErrorHandler(async (req, res, _next) => {
-    const chatSessions = await AssistantRepo.getChatSessions();
+    const { assistantId } = req.params;
+    const chatSessions = await AssistantRepo.getChatSessions(assistantId);
     res.status(200).send(chatSessions);
   })
 );
