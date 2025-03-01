@@ -9,6 +9,7 @@ interface ChatAreaProps {
   userMessage: string;
   onUserMessageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSendMessage: () => void;
+  isLoadingMessages: boolean;
 }
 
 export function ChatArea({
@@ -17,6 +18,7 @@ export function ChatArea({
   userMessage,
   onUserMessageChange,
   onSendMessage,
+  isLoadingMessages,
 }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +39,7 @@ export function ChatArea({
             key={index}
             type={chat.type as "user" | "ai"}
             content={chat.content}
+            isLoading={isLoadingMessages}
           />
         ))}
         {isAIResponding && (

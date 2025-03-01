@@ -222,6 +222,7 @@ function App() {
               userMessage={userMessage}
               onUserMessageChange={handleUserMessageChange}
               onSendMessage={handleSendMessage}
+              isLoadingMessages={isLoadingMessages}
             />
           </div>
         </div>
