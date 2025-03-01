@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import {
   getAssistants,
   createChatSession,
@@ -12,6 +13,9 @@ import { ChatHeader } from "./components/Chat/ChatHeader";
 import { ChatSidebar } from "./components/Chat/ChatSidebar";
 import { ChatArea } from "./components/Chat/ChatArea";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { error } from "console";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { useError } from "./contexts/ErrorContext";
 
 function App() {
   const [userMessage, setUserMessage] = useState("");
@@ -29,6 +33,7 @@ function App() {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isAIResponding, setIsAIResponding] = useState(false);
   const [isLoadingAssistants, setIsLoadingAssistants] = useState(true);
+  const { setError } = useError();
 
   useEffect(() => {
     // todo add error handling and abort controller
@@ -40,6 +45,11 @@ function App() {
         if (assistants.length > 0) {
           setSelectedAssistant(assistants[0]);
         }
+      })
+      .catch((error: any) => {
+        toast.error(error.message || "Failed to load assistants");
+        // @ts-ignore
+        setError(error?.message || "Failed to load assistants");
       })
       .finally(() => {
         setIsLoadingAssistants(false);
@@ -60,12 +70,19 @@ function App() {
     async function fetchSessions() {
       setIsLoadingSessions(true);
       try {
+        // selectedAssistant?.id as number
+        // @ts-ignore
         const sessions = await getChatSessions(selectedAssistant?.id as number);
+        if (sessions.error) {
+          throw new Error(sessions.error.message || "Failed to fetch sessions");
+        }
         console.log("sessions-why", sessions);
         setSessions(sessions);
-      } catch (error) {
+      } catch (error: any) {
         if (!abortController.signal.aborted) {
-          console.error("Failed to fetch sessions:", error);
+          toast.error(error?.message || "Failed to fetch sessions");
+          setError(error?.message || "Failed to fetch sessions");
+          // console.error("Failed to fetch sessions:", error);
         }
       } finally {
         setIsLoadingSessions(false);
@@ -85,17 +102,23 @@ function App() {
     async function fetchMessages() {
       setIsLoadingMessages(true);
       try {
+        //activeSession?.id as string
+        // @ts-ignore
         const messages = await getChatMessages(activeSession?.id as string);
         console.log("Received messages:", messages);
+        if (messages.error) {
+          throw new Error(messages.error.message || "Failed to fetch messages");
+        }
         const formattedMessages = messages.map((msg: any) => ({
           type: msg.role === "user" ? "user" : "ai",
           content: msg.content,
         }));
         console.log("Formatted messages:", formattedMessages);
         setChats(formattedMessages);
-      } catch (error) {
+      } catch (error: any) {
         if (!abortController.signal.aborted) {
-          console.error("Failed to fetch messages:", error);
+          toast.error(error.message || "Failed to fetch messages");
+          setError(error?.message || "Failed to fetch messages");
         }
       } finally {
         setIsLoadingMessages(false);
@@ -111,16 +134,25 @@ function App() {
 
     try {
       const response = await createChatSession(selectedAssistant.id.toString());
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to create new chat");
+      }
+      console.log("response", response);
       setSessions((prev) => [...prev, response]);
       setActiveSession(response);
       setChats([]); // Clear chats for new session
-    } catch (error) {
-      console.error("Failed to create chat session:", error);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create new chat");
+      setError(error.message || "Failed to create new chat");
     }
   };
 
   const handleSendMessage = async () => {
-    if (!activeSession) return;
+    if (!activeSession) {
+      toast.error("No active session or create a new chat first");
+      setError(new Error("No active session or create a new chat first"));
+      return;
+    }
 
     const currentUserMessage = {
       type: "user",
@@ -135,10 +167,14 @@ function App() {
         activeSession,
         userMessage
       );
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to send message");
+      }
       const currentAIMessage = { type: "ai", content: response.content };
       setChats((prev) => [...prev, currentAIMessage]);
-    } catch (error) {
-      console.error("Failed to send message:", error);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send message");
+      setError(error.message || "Failed to send message");
     } finally {
       setIsAIResponding(false);
     }
@@ -149,7 +185,8 @@ function App() {
   };
   //bg-gray-950
   return (
-    <ThemeProvider>
+    <div>
+      <Toaster position="top-right" />
       <div className="flex flex-col h-screen bg-white dark:bg-gray-950">
         <div className="flex flex-col h-screen px-8 pt-4">
           <ChatHeader />
@@ -189,7 +226,7 @@ function App() {
           </div>
         </div>
       </div>
-    </ThemeProvider>
+    </div>
   );
 }
 
