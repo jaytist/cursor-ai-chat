@@ -45,3 +45,10 @@ export async function getChatSessions() {
   const response = await fetch("http://localhost:3000/api/chat/sessions");
   return await response.json();
 }
+
+export async function getChatMessages(sessionId: string) {
+  const response = await fetch(
+    `http://localhost:3000/api/chat/session/${sessionId}/messages`
+  );
+  return await response.json();
+}
