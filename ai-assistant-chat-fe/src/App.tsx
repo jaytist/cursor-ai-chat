@@ -27,16 +27,22 @@ function App() {
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isAIResponding, setIsAIResponding] = useState(false);
+  const [isLoadingAssistants, setIsLoadingAssistants] = useState(true);
 
   useEffect(() => {
     // todo add error handling and abort controller
-    getAssistants().then((assistants) => {
-      setAssistants(assistants);
-      // Optionally set the first assistant as default
-      if (assistants.length > 0) {
-        setSelectedAssistant(assistants[0]);
-      }
-    });
+    setIsLoadingAssistants(true);
+    getAssistants()
+      .then((assistants) => {
+        setAssistants(assistants);
+        // Optionally set the first assistant as default
+        if (assistants.length > 0) {
+          setSelectedAssistant(assistants[0]);
+        }
+      })
+      .finally(() => {
+        setIsLoadingAssistants(false);
+      });
   }, []);
 
   // Fetch sessions when selected assistant changes
@@ -145,14 +151,18 @@ function App() {
         <ChatHeader />
 
         <div className="grid grid-cols-4 gap-4 mb-6">
-          {assistants.map((assistant) => (
-            <AssistantCard
-              key={assistant.id}
-              assistant={assistant}
-              isSelected={selectedAssistant?.id === assistant.id}
-              onSelect={setSelectedAssistant}
-            />
-          ))}
+          {isLoadingAssistants
+            ? Array(4)
+                .fill(null)
+                .map((_, index) => <AssistantCard key={index} isLoading />)
+            : assistants.map((assistant) => (
+                <AssistantCard
+                  key={assistant.id}
+                  assistant={assistant}
+                  isSelected={selectedAssistant?.id === assistant.id}
+                  onSelect={setSelectedAssistant}
+                />
+              ))}
         </div>
 
         <div className="flex gap-4 flex-1 mb-0">
